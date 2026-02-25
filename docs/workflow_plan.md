@@ -14,7 +14,7 @@
 | S2 | Normalize naming and docs for public repo | AC-S2: `README.md` is bilingual and old repo name is not used as primary identity. | Pass |
 | S3 | Produce runnable acceptance artifacts | AC-S3: `python scripts/run_acceptance_case.py --mode all --output-subdir forward_case_telefd2d` exits 0 and writes required media files. | Pass |
 | S4 | Extract README-visible demo assets | AC-S4: `assets/topo_demo/wavefield_vx.gif`, `assets/topo_demo/wavefield_vz.gif`, `assets/topo_demo/surface_seismogram_vz.png` exist. | Pass |
-| S5 | Git initialization and publish readiness | AC-S5: `git status` succeeds; if GitHub push is blocked, exact blocker + remediation commands are recorded. | In Progress |
+| S5 | Git initialization and publish readiness | AC-S5: `git status` succeeds; if GitHub push is blocked, exact blocker + remediation commands are recorded. | Pass |
 
 ## Failure Handling Policy
 - On failure, capture:
@@ -36,7 +36,17 @@
   - `python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d --progress-step 200 --progress-sec 0.5`
 - [S3] Result: pass; generated compute and postprocess artifacts in `output/forward_case_telefd2d/`.
 - [S4] Copied demo assets into `assets/topo_demo/` for README visibility.
-- [S5] Pending final git/GitHub checks.
+- [S5] Initialized git repository, committed on `main`, and pushed to GitHub:
+  - `https://github.com/yangjudiao/telefd2d`
+- [S5] Failure + retry evidence:
+  - Failed command: initial `git commit` (missing `user.name` / `user.email`).
+  - RCA: local git identity was not configured for this machine.
+  - Fallback action: set repo-local identity and retried commit.
+  - Retry command sequence:
+    - `git config user.name \"yangjudiao\"`
+    - `git config user.email \"yangjudiao@users.noreply.github.com\"`
+    - `git commit -m \"...\"`
+  - Retry result: pass.
 
 ## Evidence Paths
 - Governance/prompt:
