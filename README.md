@@ -1,10 +1,14 @@
 # telefd2d
 
-`telefd2d` is a 2D staggered-grid elastic finite-difference (FD) forward-modeling workflow with rugged free-surface topography, absorbing boundaries, and decoupled compute/postprocess stages.
+`telefd2d` is a 2D staggered-grid elastic finite-difference (FD) forward-modeling workflow focused on oblique plane-wave incidence in rugged-topography models, with absorbing boundaries and decoupled compute/postprocess stages.
 
-`telefd2d` 是一个支持起伏自由表面的二维交错网格弹性波有限差分正演流程，包含吸收边界，并采用计算与后处理解耦的工作流。
+`telefd2d` 是一个面向斜入射平面波场景的二维交错网格弹性波有限差分正演流程，支持起伏自由表面与吸收边界，并采用计算与后处理解耦的工作流。
 
-## Topography Demo / 地形算例展示
+## Topography Demo (PML x2 Case) / 地形算例展示（PML 加厚 2 倍）
+
+This gallery uses the case with doubled PML thickness in both x and z directions (`--pml-x-scale 2 --pml-z-scale 2`).
+
+下面展示的是 x、z 两个方向 PML 均加厚到 2 倍的算例（`--pml-x-scale 2 --pml-z-scale 2`）。
 
 ### Wavefield Vx (GIF)
 ![Wavefield Vx](assets/topo_demo/wavefield_vx.gif)
@@ -20,7 +24,7 @@
 
 ## Features / 特性
 - Rugged top free surface, absorbing left/right/bottom boundaries.
-- Plane-wave incidence from lower-left (`20 deg` from z-axis).
+- Oblique plane-wave incidence from lower-left (`20 deg` from z-axis) as a first-class setup.
 - Ricker wavelet source (default `0.25 Hz`).
 - Optional C++/OpenMP accelerated backend.
 - Streaming output mode to reduce memory pressure.
@@ -51,11 +55,11 @@ python scripts/build_fd_boost.py
 
 ### 3) Run acceptance case / 运行验收算例
 ```powershell
-python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d --progress-step 200 --progress-sec 0.5
+python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d_pml2x --pml-x-scale 2 --pml-z-scale 2 --progress-step 200 --progress-sec 0.5
 ```
 
 ### 4) Locate outputs / 查看输出
-Under `output/forward_case_telefd2d/`:
+Under `output/forward_case_telefd2d_pml2x/`:
 - `wavefield_vx.gif`, `wavefield_vz.gif`
 - `wavefield_p.gif`, `wavefield_curl.gif`
 - `surface_seismogram_vx.png`, `surface_seismogram_vz.png`
@@ -70,7 +74,7 @@ python scripts/benchmark_streaming.py
 
 ### Speed + consistency benchmark
 ```powershell
-python scripts/benchmark_speed_consistency.py --baseline-subdir forward_case_telefd2d
+python scripts/benchmark_speed_consistency.py --baseline-subdir forward_case_telefd2d_pml2x
 ```
 
 ## Publish Checklist / 发布检查
@@ -80,4 +84,4 @@ python scripts/benchmark_speed_consistency.py --baseline-subdir forward_case_tel
 - [x] Two-stage prompts in `prompts/`.
 
 ## License
-License is not set yet. Add `LICENSE` before public release if needed.
+This project is licensed under the MIT License. See `LICENSE`.

@@ -25,9 +25,7 @@ def _boundary_overlay(
     ax: plt.Axes,
     grid: GridSpec,
     surface_idx: np.ndarray,
-    source_x_idx: int,
     source_z_idx: int,
-    with_source_depth_line: bool = False,
 ) -> None:
     x_km = np.arange(grid.nx_total) * grid.dx_m / 1_000.0
     z_km = surface_idx * grid.dz_m / 1_000.0
@@ -41,13 +39,8 @@ def _boundary_overlay(
     ax.axhline(bottom_z, color="k", lw=1.0, ls="--")
     ax.plot(x_km, z_km, color="lime", lw=1.2, label="Free surface")
 
-    sx = source_x_idx * grid.dx_m / 1_000.0
     sz = source_z_idx * grid.dz_m / 1_000.0
     ax.axhline(sz, color="yellow", lw=0.9, ls=":", label="Source injection line")
-    ax.plot([sx], [sz], marker="o", color="yellow", markersize=3)
-
-    if with_source_depth_line:
-        ax.axvline(sx, color="yellow", lw=0.8, ls=":")
 
 
 def save_wavefield_gif(
@@ -57,7 +50,6 @@ def save_wavefield_gif(
     out_path: Path,
     title: str,
     surface_idx: np.ndarray,
-    source_x_idx: int,
     source_z_idx: int,
     fps: int = 10,
 ) -> None:
@@ -81,9 +73,7 @@ def save_wavefield_gif(
             ax=ax,
             grid=grid,
             surface_idx=surface_idx,
-            source_x_idx=source_x_idx,
             source_z_idx=source_z_idx,
-            with_source_depth_line=False,
         )
         ax.set_title(f"{title} | full domain with PML | t={times[i]:.2f}s")
         ax.set_xlabel("x (km)")
@@ -107,7 +97,6 @@ def save_surface_seismogram(
     dt_s: float,
     out_png: Path,
     out_npy: Path,
-    source_x_idx: int,
     component: str,
 ) -> None:
     out_png.parent.mkdir(parents=True, exist_ok=True)
@@ -119,7 +108,6 @@ def save_surface_seismogram(
 
     left_x = grid.nbx * grid.dx_m / 1_000.0
     right_x = (grid.nbx + grid.nx_phys) * grid.dx_m / 1_000.0
-    sx = source_x_idx * grid.dx_m / 1_000.0
 
     plt.figure(figsize=(10, 4.2), dpi=140)
     plt.imshow(
@@ -134,7 +122,6 @@ def save_surface_seismogram(
     plt.axvline(left_x, color="red", lw=1.0, ls="--", label="PML boundary")
     plt.axvline(right_x, color="red", lw=1.0, ls="--")
     plt.axhline(0.0, color="lime", lw=1.2, label="Free-surface receiver line")
-    plt.axvline(sx, color="yellow", lw=0.9, ls=":", label="Source x-line")
     plt.xlabel("x (km)")
     plt.ylabel("time (s)")
     plt.title(f"Surface Seismogram ({component}) | full x-domain including PML")

@@ -64,6 +64,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dx-m", type=float, default=None)
     parser.add_argument("--dz-m", type=float, default=None)
     parser.add_argument("--pml-x-scale", type=float, default=1.0)
+    parser.add_argument("--pml-z-scale", type=float, default=1.0)
     parser.add_argument("--topo-amplitude-km", type=float, default=5.0)
     parser.add_argument("--topo-mean-depth-km", type=float, default=5.0)
     parser.add_argument("--topo-cycles", type=float, default=4.0)
@@ -201,13 +202,18 @@ def _stop_rss_monitor(
 
 
 def run_compute_stage(args: argparse.Namespace, out_dir: Path) -> dict:
+    pml_x_scale = max(0.1, float(args.pml_x_scale))
+    pml_z_scale = max(0.1, float(args.pml_z_scale))
+
     cfg = replace(
         SimulationConfig(),
         width_km=float(args.width_km),
         depth_km=float(args.depth_km),
         f0_hz=float(args.f0_hz),
-        pml_ratio_x=float(SimulationConfig().pml_ratio_x * max(0.1, float(args.pml_x_scale))),
-        pml_min_cells_x=int(max(1, round(SimulationConfig().pml_min_cells_x * max(0.1, float(args.pml_x_scale))))),
+        pml_ratio_x=float(SimulationConfig().pml_ratio_x * pml_x_scale),
+        pml_min_cells_x=int(max(1, round(SimulationConfig().pml_min_cells_x * pml_x_scale))),
+        pml_ratio_z=float(SimulationConfig().pml_ratio_z * pml_z_scale),
+        pml_min_cells_z=int(max(1, round(SimulationConfig().pml_min_cells_z * pml_z_scale))),
         topo_amplitude_km=float(args.topo_amplitude_km),
         topo_mean_depth_km=float(args.topo_mean_depth_km),
         topo_cycles=float(args.topo_cycles),
@@ -355,6 +361,8 @@ def run_compute_stage(args: argparse.Namespace, out_dir: Path) -> dict:
             "nz_total": grid.nz_total,
         },
         "pml": {
+            "x_scale": float(pml_x_scale),
+            "z_scale": float(pml_z_scale),
             "reflect_coeff": cfg.pml_reflect_coeff,
             "power": cfg.pml_power,
             "kappa_max": cfg.pml_kappa_max,
@@ -442,7 +450,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         out_dir / "wavefield_p.gif",
         "p = div(v)",
         surface_idx=surface_idx,
-        source_x_idx=source_x_idx,
         source_z_idx=source_z_idx,
     )
     save_wavefield_gif(
@@ -452,7 +459,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         out_dir / "wavefield_curl.gif",
         "curl = dvz/dx - dvx/dz",
         surface_idx=surface_idx,
-        source_x_idx=source_x_idx,
         source_z_idx=source_z_idx,
     )
     save_wavefield_gif(
@@ -462,7 +468,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         out_dir / "wavefield_vx.gif",
         "vx",
         surface_idx=surface_idx,
-        source_x_idx=source_x_idx,
         source_z_idx=source_z_idx,
     )
     save_wavefield_gif(
@@ -472,7 +477,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         out_dir / "wavefield_vz.gif",
         "vz",
         surface_idx=surface_idx,
-        source_x_idx=source_x_idx,
         source_z_idx=source_z_idx,
     )
 
@@ -483,7 +487,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         dt_s=grid.dt_s * int(compute_meta["output_controls"]["seismo_stride_t"]),
         out_png=out_dir / "surface_seismogram_vx.png",
         out_npy=out_dir / "surface_seismogram_vx.npy",
-        source_x_idx=source_x_idx,
         component="Vx",
     )
     save_surface_seismogram(
@@ -492,7 +495,6 @@ def run_postprocess_stage(out_dir: Path) -> dict:
         dt_s=grid.dt_s * int(compute_meta["output_controls"]["seismo_stride_t"]),
         out_png=out_dir / "surface_seismogram_vz.png",
         out_npy=out_dir / "surface_seismogram_vz.npy",
-        source_x_idx=source_x_idx,
         component="Vz",
     )
 

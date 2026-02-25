@@ -66,3 +66,25 @@
   - `assets/topo_demo/wavefield_vz.gif`
   - `assets/topo_demo/surface_seismogram_vx.png`
   - `assets/topo_demo/surface_seismogram_vz.png`
+
+## 2026-02-25 Update (Plane-Wave Emphasis + PML x2 Demo)
+- Request:
+  - highlight plane-wave incidence in project introduction,
+  - replace displayed GIF/seismogram with doubled-PML case,
+  - remove source-position mark from seismogram,
+  - keep only one source line on GIF overlays,
+  - add project license.
+- Implementation:
+  - Updated `README.md` intro and demo section for plane-wave emphasis and PML x2 case.
+  - Added `--pml-z-scale` to `scripts/run_acceptance_case.py`, and produced `output/forward_case_telefd2d_pml2x/`.
+  - Updated plotting logic in `src/fd_workflow/postprocess.py`:
+    - removed source x-line from seismogram,
+    - removed source point marker from GIF overlays, keeping source injection line only.
+  - Replaced README assets with outputs from `forward_case_telefd2d_pml2x`.
+  - Added `LICENSE` (MIT).
+- Validation:
+  - Command passed:
+    - `python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d_pml2x --pml-x-scale 2 --pml-z-scale 2 --progress-step 200 --progress-sec 0.5`
+  - Metadata check:
+    - baseline `nbx=122`, `nbz=41`
+    - pml2x case `nbx=244`, `nbz=82`
