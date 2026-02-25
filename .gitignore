@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Build artifacts
+build/
+*.so
+*.pyd
+*.dll
+*.lib
+
+# Virtual env
+.venv/
+venv/
+
+# Generated outputs (heavy)
+output/
+
+# Local docs scratch
+tmp/
+
+# OS/editor
+.DS_Store
+Thumbs.db

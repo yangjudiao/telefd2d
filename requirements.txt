@@ -1,0 +1,7 @@
+numpy
+numba
+matplotlib
+imageio
+pybind11>=2.12
+setuptools>=68
+psutil
