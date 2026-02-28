@@ -75,10 +75,37 @@ python scripts/run_acceptance_case.py --mode all --backend boost_parallel --thre
 python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d_pml2x --pml-x-scale 2 --pml-z-scale 2 --progress-step 200 --progress-sec 0.5
 ```
 
+## MCP 集成（AI 可调用工作流）
+
+telefd2d 现已提供 MCP 服务层，AI 代理可以通过结构化工具调用正演流程，而不必依赖脆弱的纯命令行拼接。
+
+### 1）启动 MCP 服务
+```powershell
+python scripts/run_mcp_server.py
+```
+
+### 2）核心 MCP 工具
+- `telefd2d_summarize_project`
+- `telefd2d_run_forward_case`
+- `telefd2d_get_case_report`
+- `telefd2d_list_cases`
+
+### 3）运行轻量 smoke 验证
+```powershell
+python scripts/mcp_smoke_test.py --backend baseline
+```
+
+### 4）MCP 文档
+- 方案决策：`docs/mcp_decision.md`
+- 接入指南与调用示例：`docs/mcp_integration.md`
+
 ## 仓库结构
 
 - `src/fd_workflow/`：求解器、模型构建、后处理模块。
+- `src/telefd2d_mcp/`：供 AI 调用的 MCP 适配层。
 - `scripts/run_acceptance_case.py`：主流程入口。
+- `scripts/run_mcp_server.py`：stdio MCP 服务入口。
+- `scripts/mcp_smoke_test.py`：端到端轻量验证脚本。
 - `scripts/benchmark_streaming.py`：内存/流式输出基准。
 - `scripts/benchmark_speed_consistency.py`：速度与一致性基准。
 - `assets/topo_demo/`：文档展示素材。

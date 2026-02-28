@@ -85,6 +85,65 @@
 - Validation:
   - Command passed:
     - `python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d_pml2x --pml-x-scale 2 --pml-z-scale 2 --progress-step 200 --progress-sec 0.5`
-  - Metadata check:
-    - baseline `nbx=122`, `nbz=41`
-    - pml2x case `nbx=244`, `nbz=82`
+- Metadata check:
+  - baseline `nbx=122`, `nbz=41`
+  - pml2x case `nbx=244`, `nbz=82`
+
+## 2026-02-28 Update (Prompt_0 MCP Route)
+
+### Scope
+- Source request: optimize `prompt_0.docx` and run it.
+- New target: evaluate MCP suitability for AI-driven forward modeling, then implement and validate.
+
+### Plan and Acceptance
+
+| Step | Action | Acceptance Criteria (AC) | Status |
+| --- | --- | --- | --- |
+| M1 | Produce optimized two-stage prompt package for MCP route | AC-M1: `prompts/optimized_prompt_package.md` contains summary, gaps, EARS, optimized prompt, assumptions, execution contract. | Pass |
+| M2 | Implement MCP adapter layer | AC-M2: `src/telefd2d_mcp/server.py` exposes toolable functions and validates mode/backend/output_subdir. | Pass |
+| M3 | Add MCP entrypoint and smoke script | AC-M3: `scripts/run_mcp_server.py` and `scripts/mcp_smoke_test.py` exist and are runnable. | Pass |
+| M4 | Update docs and README family | AC-M4: README/README_EN/README_ZH include MCP quick start and tool list; docs include decision + integration guide. | Pass |
+| M5 | Execute smoke validation | AC-M5: `python scripts/mcp_smoke_test.py --backend baseline` exits 0 and generates metadata files. | Pass |
+
+### Execution Log
+- Updated governance and prompts:
+  - `AGENTS.md`
+  - `prompts/init_prompt.md`
+  - `prompts/cli_prompt.md`
+  - `prompts/optimized_prompt_package.md`
+- Added MCP implementation:
+  - `src/telefd2d_mcp/__init__.py`
+  - `src/telefd2d_mcp/server.py`
+  - `scripts/run_mcp_server.py`
+  - `scripts/mcp_smoke_test.py`
+- Added MCP documentation:
+  - `docs/mcp_decision.md`
+  - `docs/mcp_integration.md`
+- Updated user documentation:
+  - `README.md`
+  - `README_EN.md`
+  - `README_ZH.md`
+- Updated dependency list:
+  - `requirements.txt` (`mcp>=1.0.0`)
+
+### Validation Evidence
+- Dependency gate:
+  - Command: `python -m pip install -r requirements.txt`
+  - Result: pass (`mcp` already available in environment).
+- Smoke gate:
+  - Command: `python scripts/mcp_smoke_test.py --backend baseline`
+  - Result: pass (exit code 0; total duration around 15s).
+  - Output directory:
+    - `output/forward_case_telefd2d_mcp_smoke/`
+  - Required files present:
+    - `compute_metadata.json`
+    - `run_metadata.json`
+  - Reported outputs include:
+    - `wavefield_vx.gif`
+    - `wavefield_vz.gif`
+    - `surface_seismogram_vx.png`
+    - `surface_seismogram_vz.png`
+
+### Failure Handling Notes
+- No runtime failure in MCP smoke validation.
+- Earlier repository acquisition used zip fallback because direct `git clone` to GitHub failed on this machine network path.

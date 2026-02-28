@@ -5,3 +5,4 @@ imageio
 pybind11>=2.12
 setuptools>=68
 psutil
+mcp>=1.0.0

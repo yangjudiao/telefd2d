@@ -75,10 +75,37 @@ python scripts/run_acceptance_case.py --mode all --backend boost_parallel --thre
 python scripts/run_acceptance_case.py --mode all --backend boost_parallel --threads 14 --output-mode stream_to_disk --output-subdir forward_case_telefd2d_pml2x --pml-x-scale 2 --pml-z-scale 2 --progress-step 200 --progress-sec 0.5
 ```
 
+## MCP Integration (AI-Callable Workflow)
+
+telefd2d now provides an MCP server so AI agents can call forward modeling through typed tools instead of brittle shell-only prompts.
+
+### 1) Start MCP server
+```powershell
+python scripts/run_mcp_server.py
+```
+
+### 2) Main MCP tools
+- `telefd2d_summarize_project`
+- `telefd2d_run_forward_case`
+- `telefd2d_get_case_report`
+- `telefd2d_list_cases`
+
+### 3) Run a lightweight smoke test
+```powershell
+python scripts/mcp_smoke_test.py --backend baseline
+```
+
+### 4) MCP documentation
+- Decision record: `docs/mcp_decision.md`
+- Integration guide with examples: `docs/mcp_integration.md`
+
 ## Repository Structure
 
 - `src/fd_workflow/`: solver, model, and postprocess modules.
+- `src/telefd2d_mcp/`: MCP adapter layer for AI tool invocation.
 - `scripts/run_acceptance_case.py`: main workflow entry.
+- `scripts/run_mcp_server.py`: stdio MCP server entrypoint.
+- `scripts/mcp_smoke_test.py`: lightweight end-to-end MCP validation script.
 - `scripts/benchmark_streaming.py`: memory/streaming benchmark.
 - `scripts/benchmark_speed_consistency.py`: speed and consistency benchmark.
 - `assets/topo_demo/`: media shown in documentation.
