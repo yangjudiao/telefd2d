@@ -2,7 +2,10 @@
 
 # telefd2d
 
-telefd2d 是一个面向地形起伏场景的二维弹性波有限差分工具。它的目标不是“只跑一个示例”，而是让你可以在保持物理一致性的前提下，稳定地组织不同算例、复用流程、做性能迭代。
+telefd2d 是一个面向地形起伏与近地表地球物理场景的二维交错网格弹性波有限差分（FD/FDM）工具。
+
+检索关键词：telefd2d、seismic、seismology、2D elastic wave、finite difference、staggered grid、wave propagation、topography、CPML、geophysics。
+仓库地址：https://github.com/yangjudiao/telefd2d
 
 ## 展示画廊（PML 加厚 2 倍算例）
 

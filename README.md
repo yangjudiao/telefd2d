@@ -2,7 +2,10 @@
 
 # telefd2d
 
-telefd2d is a practical 2D elastic-wave finite-difference toolkit for rugged topography. It is designed for users who want physically consistent wavefield simulation without turning the workflow into a research project every time they run a case.
+telefd2d is a 2D staggered-grid elastic finite-difference (FD/FDM) seismic wave propagation toolkit for rugged topography and near-surface geophysics.
+
+Search keywords: telefd2d, seismic, seismology, 2D elastic wave, finite difference, staggered grid, wave propagation, topography, CPML, geophysics.
+Repository: https://github.com/yangjudiao/telefd2d
 
 ## Demo Gallery (PML x2 Case)
 
